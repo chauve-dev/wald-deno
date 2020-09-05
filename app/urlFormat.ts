@@ -3,6 +3,7 @@ import { params } from './interfaces.ts'
 export default class urlFormat {
     static normalize(data: string){
         var params: params = {};
+        var urlParams: string = "";
         var route: string | undefined = undefined;
         if(data.indexOf('?') != -1){
             route=data.split('?')[0];
@@ -17,10 +18,10 @@ export default class urlFormat {
             }
             route=data;
         }
-
         return {
             route: route,
-            params: params
+            params: params,
+            urlParams: urlParams
         }
     }
 }

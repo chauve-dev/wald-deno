@@ -5,10 +5,12 @@ import ejsHandler from './ejsHandler.ts';
 export default class controller{
     request: ServerRequest;
     params: params;
+    urlParams: string;
 
     constructor(request: ServerRequest, url: normalizedUrl){
         this.request = request;
         this.params = url.params;
+        this.urlParams = url.urlParams
         this.index();
     }
 
