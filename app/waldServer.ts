@@ -36,7 +36,7 @@ export default class waldServer{
   }
   
   private async staticCase(req: ServerRequest){
-    const data: string | undefined = await staticHandler.staticFile(req.url);
+    const data: Uint8Array | undefined = await staticHandler.staticFile(req.url);
     const header: Headers = new Headers(staticHandler.headerBuilder(req.url));
     if(data){
       return { body: data, status: 200, headers: header};

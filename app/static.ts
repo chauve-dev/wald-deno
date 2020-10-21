@@ -18,9 +18,8 @@ export default class staticHandler{
       static async staticFile(str: string){
         var data = str.split('/')[1]
         try{
-          const file = await Deno.open('static/'+data);
-          const decoder = new TextDecoder('utf-8');
-          return decoder.decode(await Deno.readAll(file));
+          const file = await Deno.readFile('static/'+data);
+          return file;
         }catch(e){
           return undefined;
         }
