@@ -4,20 +4,11 @@ import routes from '../routes.ts';
 import routeController from "./routeController.ts";
 
 export default class controllerManager {
-    controllerList : Map<string,string>;
-
-    constructor() {
-        this.controllerList = new Map<string, string>();
-        for (const index in routes) {
-                this.controllerList.set(index, routes[index].controller)
-        }
-    }
     
-    public async runController(url: string, routeURL : string, req: ServerRequest){
-        console.log(this.controllerList.get(routeURL))
+    public async runController(req: ServerRequest, URL : normalizedUrl){
         try{
-            await import("../controller/routes/" + this.controllerList.get(routeURL)+".ts").then((ctrl) => {
-                new ctrl.default(req, url,routeURL);
+            await import("../controller/routes/" + URL.route +".ts").then((ctrl) => {
+                new ctrl.default(req, URL);
             });
         }catch(e){
             console.error(e);
@@ -25,28 +16,4 @@ export default class controllerManager {
         }
     }
 
-    public getKeyURI(URI : String){
-        let routeURI=null
-        const requestURIArr = URI.split("?")[0].split("/");
-        for (const key of this.controllerList.keys()) {
-            const routeURIArr = key.split("/")
-            if (requestURIArr.length == routeURIArr.length){
-                routeURI = key
-                for (let i = 0; i < requestURIArr.length; i++) {
-                    if (!(routeURIArr[i].startsWith(":"))){
-                        if (routeURIArr[i]!==requestURIArr[i]){
-                            routeURI = null;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (routeURI!==null) return routeURI;
-        }
-        return routeURI
-    }
-
-    public getRouteController(routeURI:any){
-        return this.controllerList.get(routeURI);
-    }
 }

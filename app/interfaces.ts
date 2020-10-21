@@ -13,6 +13,6 @@ export interface params {
 
 export interface normalizedUrl {
     route: string,
-    params: params
-    urlParams: string;
+    getParams: params,
+    urlParams: params;
 }
