@@ -4,13 +4,13 @@ import ejsHandler from './ejsHandler.ts';
 
 export default class controller{
     request: ServerRequest;
-    params: params;
-    urlParams: string;
+    getParams: Map<string,string>;
+    urlParams: Map<string,string>;
 
-    constructor(request: ServerRequest, url: normalizedUrl){
+    constructor(request: ServerRequest, url:string,routeURI:string){
         this.request = request;
-        this.params = url.params;
-        this.urlParams = url.urlParams
+        this.getParams = controller.buildGetMap(url);
+        this.urlParams = controller.buildUriMap(url,routeURI)
         this.index();
     }
 
@@ -37,6 +37,37 @@ export default class controller{
 
     custom(data: string, type: string, charset: string, status: number){
         this.request.respond({ body: data, status: status, headers: new Headers({ "content-type": `${type};charset=${charset}` })});
+    }
+
+    public static buildGetMap(requestURI : string){
+        let GetMap = new Map<string, string>()
+        if (requestURI.split("?").length==2){
+            const getParam = requestURI.split("?")[1].split("&");
+            for (const param of getParam) {
+                const keyValues = param.split("=")
+                if (keyValues.length==2){
+                    GetMap.set(keyValues[0],keyValues[1])
+                }
+            }
+        }
+        return GetMap;
+    }
+
+    public static buildUriMap(requestURI : string, routeURI : string){
+        let UriMap = new Map<string, string>()
+
+        const requestUriArr = requestURI.split("?")[0].split("/");
+        const routeUriArr = routeURI.split("/");
+
+        if (requestUriArr.length===routeUriArr.length){
+            for (let i = 0; i < requestUriArr.length; i++) {
+                if (routeUriArr[i].startsWith(":")){
+                    UriMap.set(routeUriArr[i].replace(":",""),requestUriArr[i])
+                }
+            }
+        }
+        return UriMap;
+
     }
 
 }
