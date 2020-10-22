@@ -2,7 +2,7 @@ import { serve, ServerRequest } from "https://deno.land/std@0.67.0/http/server.t
 import staticHandler from './static.ts';
 import controllerManager from '../app/controllerManager.ts';
 import urlFormat from './urlFormat.ts';
-import { BufReader} from "https://deno.land/std@0.67.0/io/mod.ts";
+import postFormat from './postFormat.ts'
 
 export default class waldServer{
   private port: number;
@@ -49,8 +49,9 @@ export default class waldServer{
       case "POST":
         const decoder = new TextDecoder('utf-8');
         const body = await decoder.decode(await Deno.readAll(req.body))
-        console.log(req.headers.get("content-type"));
+        console.log(req.headers.get("content-type")+"\n");
         console.log(body);
+        console.log(postFormat.build(body,req.headers.get("content-type")))
         break;
       default:
         //@todo replacer req par un controller d'erreur
