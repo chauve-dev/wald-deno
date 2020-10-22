@@ -13,10 +13,15 @@ export default class waldServer{
 
   public async start(){
       this.ctrlManager = new controllerManager();
-      const s = serve({ port: this.port });
-      for await (const req of s) {
-        console.log(`Request on ${req.url} via method ${req.method}`)
-        this.handler(req);
+      try{
+        const s = serve({ port: this.port });
+        console.log(`Server started on port ${this.port} Starting listening request`);
+        for await (const req of s) {
+          console.log(`Request on ${req.url} via method ${req.method}`)
+          this.handler(req);
+        }
+      }catch(err){
+        console.log(`An error occurred: ${err.message}`);
       }
   }
 
