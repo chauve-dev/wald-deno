@@ -24,15 +24,35 @@ export default class waldServer{
   private async handler(req: ServerRequest ){
     const url = req.url;
     const routeURI = urlFormat.getKeyURI(url)
-    if (routeURI!==null){
-      await this.ctrlManager.runController(req,urlFormat.build(url,routeURI))
-    }else{
-      const resp = await this.staticCase(req)
-      if(resp){
-        req.respond(resp);
-      }else{
-        req.respond({body: "Erreur 404", status: 404, headers: new Headers({ "content-type": "text/plain;charset=utf-8"})});
-      }
+    switch (req.method) {
+      case "GET", "HEAD":
+        if (routeURI !== null)
+        {
+          await this.ctrlManager.runController(req, urlFormat.build(url, routeURI))
+        }
+        else
+        {
+          const resp = await this.staticCase(req)
+          if (resp) {
+            req.respond(resp);
+          } else {
+            req.respond({
+              body: "Erreur 404",
+              status: 404,
+              headers: new Headers({"content-type": "text/plain;charset=utf-8"})
+            });
+          }
+        }
+        break;
+      case "POST":
+        //@todo prendre en charge le POST
+        break;
+      default:
+        req.respond({
+          body: "Methode not implemented",
+          status: 501,
+          headers: new Headers({"content-type": "text/plain;charset=utf-8"})
+        });
     }
   }
   
