@@ -37,6 +37,7 @@ export default class waldServer{
           if (resp) {
             req.respond(resp);
           } else {
+            //@todo replacer req par un controller d'erreur
             req.respond({
               body: "Erreur 404",
               status: 404,
@@ -52,8 +53,9 @@ export default class waldServer{
         console.log(body);
         break;
       default:
+        //@todo replacer req par un controller d'erreur
         req.respond({
-          body: "Methode not implemented",
+          body: "Not implemented",
           status: 501,
           headers: new Headers({"content-type": "text/plain;charset=utf-8"})
         });
