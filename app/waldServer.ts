@@ -2,6 +2,7 @@ import { serve, ServerRequest } from "https://deno.land/std@0.67.0/http/server.t
 import staticHandler from './static.ts';
 import controllerManager from '../app/controllerManager.ts';
 import urlFormat from './urlFormat.ts';
+import { BufReader} from "https://deno.land/std@0.67.0/io/mod.ts";
 
 export default class waldServer{
   private port: number;
@@ -25,7 +26,7 @@ export default class waldServer{
     const url = req.url;
     const routeURI = urlFormat.getKeyURI(url)
     switch (req.method) {
-      case "GET", "HEAD":
+      case "GET" || "HEAD":
         if (routeURI !== null)
         {
           await this.ctrlManager.runController(req, urlFormat.build(url, routeURI))
@@ -45,7 +46,10 @@ export default class waldServer{
         }
         break;
       case "POST":
-        //@todo prendre en charge le POST
+        const decoder = new TextDecoder('utf-8');
+        const body = await decoder.decode(await Deno.readAll(req.body))
+        console.log(req.headers.get("content-type"));
+        console.log(body);
         break;
       default:
         req.respond({
